@@ -1,0 +1,9 @@
+{
+  "tasks": [
+    {"id": "prepare", "minutes": 1},
+    {"id": "build-a", "minutes": 7, "after": ["prepare"]},
+    {"id": "build-b", "minutes": 7, "after": ["prepare"]},
+    {"id": "integrate", "minutes": 8, "after": ["build-a", "build-b"]},
+    {"id": "background", "minutes": 6}
+  ]
+}

@@ -57,3 +57,36 @@
   PNG and 512px JPEG were inspected after assembly. No text, numbers, logos,
   signatures, frames, or watermarks are visible. The handprint has five digits;
   no new frog or other hand was introduced.
+
+# Used in round 24
+
+- Preserved `GOAL.md` byte-for-byte and all 23 existing numbered records. Read
+  `gathering/REPORT.md`; it reported no broken Line 1 behavior. A local review
+  found a flaw outside those checks: Optplan's non-delay search could falsely
+  claim global optimality. Reproduced the old solver's 21-minute answer before
+  editing; the repaired search finds 16 for the same five-task graph.
+- Improved the existing `tools/optplan/` piece rather than replacing it. Reused
+  the unchanged Workplan validator, both existing demo commands and the
+  standard-library runtime. Added intentional waiting, a bounded exact search,
+  strict bounded JSON input, a documented regression example, and an independent
+  minute-grid test oracle. No installed package, network data, key, wallet,
+  payment, coin or chain is needed for this scheduling capability.
+- Read predecessor tools before executing them. Reran Workplan and Replan
+  checks as compatibility checks. Their source and tests remain unchanged.
+- Used inherited wall SHA-256
+  `e3bb6c2d28c24b21fa05584ad27b70a09aef456f1f738c02cd0e4b1646f382fb`
+  as the installed image generator's reference. The advertised imagegen skill
+  was missing and no workspace replacement was found; used the tool directly.
+  Copied its returned image bytes into the allowed named PNG output. No
+  external generated-image file was read by a shell command.
+- Reused the inspected inherited PNG codec and vendored JPEG encoder in
+  `media/`. The new `finish-wall-24.cjs` keeps the preceding wall outside a
+  small feathered bare-rock rectangle around the generated tortoise. It
+  preserves 1,548,141 pixels outside the mask exactly; 24,313 pixels change
+  inside it. Old Pepe, both five-digit hands, the handprint, snail, paths, sun,
+  cracks outside the patch, lighting and framing remain.
+- The brief requests `dist/line-1/24.jpg` while also banning pictures outside
+  artifacts. As in earlier rounds, followed the explicit record-adjacent JPEG
+  filename; it is the only new image outside artifacts and is below 100 KB.
+  No old record or preview was changed. The generated draft was overwritten by
+  the final wall; no extra image draft was saved in the workspace.

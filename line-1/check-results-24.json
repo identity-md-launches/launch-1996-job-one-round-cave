@@ -1,0 +1,86 @@
+{
+  "round": 24,
+  "observed_on": "2026-10-16",
+  "all_passed": true,
+  "regression": {
+    "before_minutes": 21,
+    "after_minutes": 16,
+    "critical_path_minutes": 16,
+    "old_claim_was_false": true
+  },
+  "results": [
+    {
+      "name": "workplan self-test",
+      "command": "python3 -B line-1/tools/workplan/workplan.py --self-test",
+      "expected_exit": 0,
+      "actual_exit": 0,
+      "passed": true,
+      "output": "PASS: demo, deadline checks, invalid inputs, 150 seeded dependency graphs, determinism and resource constraints\n"
+    },
+    {
+      "name": "workplan demo",
+      "command": "python3 -B line-1/tools/workplan/workplan.py --demo --workers 2 --budget 25",
+      "expected_exit": 0,
+      "actual_exit": 0,
+      "passed": true,
+      "output": "{\n  \"units\": \"minutes\",\n  \"workers\": 2,\n  \"method\": \"nonpreemptive list scheduling; longest downstream duration first; ties by id\",\n  \"schedule\": [\n    {\n      \"task\": \"read-brief\",\n      \"worker\": 1,\n      \"start\": 0,\n      \"finish\": 3\n    },\n    {\n      \"task\": \"implement\",\n      \"worker\": 1,\n      \"start\": 3,\n      \"finish\": 15\n    },\n    {\n      \"task\": \"prepare-fixtures\",\n      \"worker\": 2,\n      \"start\": 3,\n      \"finish\": 7\n    },\n    {\n      \"task\": \"verify\",\n      \"worker\": 1,\n      \"start\": 15,\n      \"finish\": 20\n    },\n    {\n      \"task\": \"write-handoff\",\n      \"worker\": 1,\n      \"start\": 20,\n      \"finish\": 22\n    }\n  ],\n  \"finish\": 22,\n  \"critical_path\": [\n    \"read-brief\",\n    \"implement\",\n    \"verify\",\n    \"write-handoff\"\n  ],\n  \"critical_path_minutes\": 22,\n  \"lower_bound\": 22,\n  \"budget\": 25.0,\n  \"fits_budget\": true,\n  \"deadline_verdict\": \"fits\",\n  \"slack\": 3.0\n}\n"
+    },
+    {
+      "name": "replan suite",
+      "command": "python3 -B line-1/tools/replan/selftest.py",
+      "expected_exit": 0,
+      "actual_exit": 0,
+      "passed": true,
+      "output": "test_300_progress_snapshots (__main__.ReplanTests.test_300_progress_snapshots) ... ok\ntest_complete_graph_still_validated (__main__.ReplanTests.test_complete_graph_still_validated) ... ok\ntest_delayed_demo (__main__.ReplanTests.test_delayed_demo) ... ok\ntest_done_all_and_expired_deadline (__main__.ReplanTests.test_done_all_and_expired_deadline) ... ok\ntest_file_and_cli_validation (__main__.ReplanTests.test_file_and_cli_validation) ... ok\ntest_heuristic_miss_is_not_proof (__main__.ReplanTests.test_heuristic_miss_is_not_proof) ... ok\ntest_inconsistent_progress (__main__.ReplanTests.test_inconsistent_progress) ... ok\ntest_input_not_mutated (__main__.ReplanTests.test_input_not_mutated) ... ok\ntest_margin_on_remaining_work_only (__main__.ReplanTests.test_margin_on_remaining_work_only) ... ok\ntest_no_progress_matches_predecessor (__main__.ReplanTests.test_no_progress_matches_predecessor) ... ok\ntest_repeated_active_and_worker (__main__.ReplanTests.test_repeated_active_and_worker) ... ok\ntest_running_workers_are_pinned (__main__.ReplanTests.test_running_workers_are_pinned) ... ok\ntest_simultaneous_completions_release_all_dependencies (__main__.ReplanTests.test_simultaneous_completions_release_all_dependencies) ... ok\ntest_timestamp_precision_rejected (__main__.ReplanTests.test_timestamp_precision_rejected) ... ok\n\n----------------------------------------------------------------------\nRan 14 tests in 0.120s\n\nOK\n"
+    },
+    {
+      "name": "replan demo",
+      "command": "python3 -B line-1/tools/replan/replan.py --demo --workers 2 --budget 27",
+      "expected_exit": 0,
+      "actual_exit": 0,
+      "passed": true,
+      "output": "{\n  \"units\": \"minutes\",\n  \"elapsed_minutes\": 9,\n  \"workers\": 2,\n  \"budget\": 27.0,\n  \"remaining_budget\": 18.0,\n  \"margin_percent\": 0,\n  \"completed\": [\n    \"prepare-fixtures\",\n    \"read-brief\"\n  ],\n  \"schedule\": [\n    {\n      \"task\": \"implement\",\n      \"worker\": 1,\n      \"start\": 9,\n      \"finish\": 19.0,\n      \"state\": \"running\",\n      \"remaining_minutes\": 10.0\n    },\n    {\n      \"task\": \"verify\",\n      \"worker\": 1,\n      \"start\": 19.0,\n      \"finish\": 24.0,\n      \"state\": \"pending\",\n      \"remaining_minutes\": 5.0\n    },\n    {\n      \"task\": \"write-handoff\",\n      \"worker\": 1,\n      \"start\": 24.0,\n      \"finish\": 26.0,\n      \"state\": \"pending\",\n      \"remaining_minutes\": 2.0\n    }\n  ],\n  \"finish\": 26.0,\n  \"remaining_minutes\": 17.0,\n  \"lower_bound_remaining\": 17.0,\n  \"earliest_possible_finish\": 26.0,\n  \"critical_path\": [\n    \"implement\",\n    \"verify\",\n    \"write-handoff\"\n  ],\n  \"fits_budget\": true,\n  \"deadline_verdict\": \"fits\",\n  \"slack\": 1.0,\n  \"method\": \"nonpreemptive longest downstream first; running tasks pinned to their workers\"\n}\n"
+    },
+    {
+      "name": "optplan inherited self-test",
+      "command": "python3 -B line-1/tools/optplan/optplan.py --self-test",
+      "expected_exit": 0,
+      "actual_exit": 0,
+      "passed": true,
+      "output": "PASS: optimum demos, intentional-idle regression, worker bound, integer/task limits\n"
+    },
+    {
+      "name": "optplan independent suite",
+      "command": "python3 -B line-1/tools/optplan/selftest.py",
+      "expected_exit": 0,
+      "actual_exit": 0,
+      "passed": true,
+      "output": "test_all_four_task_dags (__main__.OptplanTests.test_all_four_task_dags) ... ok\ntest_bounded_strict_json (__main__.OptplanTests.test_bounded_strict_json) ... ok\ntest_cli_success_and_limit_failure (__main__.OptplanTests.test_cli_success_and_limit_failure) ... ok\ntest_fourteen_task_chain (__main__.OptplanTests.test_fourteen_task_chain) ... ok\ntest_idle_regression (__main__.OptplanTests.test_idle_regression) ... ok\ntest_invalid_graphs (__main__.OptplanTests.test_invalid_graphs) ... ok\ntest_seeded_oracle (__main__.OptplanTests.test_seeded_oracle) ... ok\ntest_serial_and_unlimited_workers (__main__.OptplanTests.test_serial_and_unlimited_workers) ... ok\ntest_simultaneous_completions (__main__.OptplanTests.test_simultaneous_completions) ... ok\ntest_state_limit (__main__.OptplanTests.test_state_limit) ... ok\n\n----------------------------------------------------------------------\nRan 10 tests in 0.080s\n\nOK\n"
+    },
+    {
+      "name": "optplan original demo",
+      "command": "python3 -B line-1/tools/optplan/optplan.py --demo --workers 2",
+      "expected_exit": 0,
+      "actual_exit": 0,
+      "passed": true,
+      "output": "{\n  \"units\": \"minutes\",\n  \"workers\": 2,\n  \"method\": \"exhaustive event search with intentional idle time\",\n  \"task_limit\": 14,\n  \"finish\": 11,\n  \"schedule\": [\n    {\n      \"task\": \"brief\",\n      \"worker\": 1,\n      \"start\": 0,\n      \"finish\": 2\n    },\n    {\n      \"task\": \"build-a\",\n      \"worker\": 1,\n      \"start\": 2,\n      \"finish\": 7\n    },\n    {\n      \"task\": \"build-b\",\n      \"worker\": 2,\n      \"start\": 2,\n      \"finish\": 6\n    },\n    {\n      \"task\": \"check\",\n      \"worker\": 1,\n      \"start\": 7,\n      \"finish\": 10\n    },\n    {\n      \"task\": \"handoff\",\n      \"worker\": 1,\n      \"start\": 10,\n      \"finish\": 11\n    }\n  ],\n  \"states_examined\": 8,\n  \"state_limit\": 100000,\n  \"proven_optimal\": true\n}\n"
+    },
+    {
+      "name": "optplan waiting example",
+      "command": "python3 -B line-1/tools/optplan/optplan.py --input line-1/tools/optplan/idle-example.json --workers 2",
+      "expected_exit": 0,
+      "actual_exit": 0,
+      "passed": true,
+      "output": "{\n  \"units\": \"minutes\",\n  \"workers\": 2,\n  \"method\": \"exhaustive event search with intentional idle time\",\n  \"task_limit\": 14,\n  \"finish\": 16,\n  \"schedule\": [\n    {\n      \"task\": \"prepare\",\n      \"worker\": 1,\n      \"start\": 0,\n      \"finish\": 1\n    },\n    {\n      \"task\": \"build-a\",\n      \"worker\": 1,\n      \"start\": 1,\n      \"finish\": 8\n    },\n    {\n      \"task\": \"build-b\",\n      \"worker\": 2,\n      \"start\": 1,\n      \"finish\": 8\n    },\n    {\n      \"task\": \"background\",\n      \"worker\": 1,\n      \"start\": 8,\n      \"finish\": 14\n    },\n    {\n      \"task\": \"integrate\",\n      \"worker\": 2,\n      \"start\": 8,\n      \"finish\": 16\n    }\n  ],\n  \"states_examined\": 24,\n  \"state_limit\": 100000,\n  \"proven_optimal\": true\n}\n"
+    },
+    {
+      "name": "optplan state-limit failure",
+      "command": "python3 -B line-1/tools/optplan/optplan.py --idle-demo --max-states 1",
+      "expected_exit": 1,
+      "actual_exit": 1,
+      "passed": true,
+      "output": "optplan: exact search state limit exceeded; optimality not established\n"
+    }
+  ],
+  "authority": "Local observations only; not independent certification."
+}

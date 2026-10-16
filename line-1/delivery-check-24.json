@@ -1,0 +1,21 @@
+{
+  "passed": true,
+  "wall_png": [
+    1254,
+    1254
+  ],
+  "preview_jpeg": [
+    512,
+    512
+  ],
+  "wall_sha256": "27ef4aa6244b8d3a1cf8f99d0871f6017aada76f3202e5f0c5d248c3eefcb084",
+  "continuing_wall_identical": true,
+  "goal_byte_identical": true,
+  "older_records_unchanged": 23,
+  "numbered_records": 24,
+  "required_output_untracked": true,
+  "all_changed_paths_allowed": true,
+  "all_changed_nonartifact_files_below_100000_bytes": true,
+  "record_schema_and_image_hash_valid": true,
+  "preview_path_conflict": "Explicit record-adjacent JPEG path chosen; documented in review-24.json."
+}
