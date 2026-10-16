@@ -94,6 +94,117 @@ class SafeZipTests(unittest.TestCase):
         with self.assertRaises(Rejected):
             process(self.archive, entries=0)
 
+    def test_implicit_parents_count_toward_node_limit(self):
+        self.make([('a/b/c/file', b'x')])
+        # One ZIP entry needs four filesystem objects, before the stage root.
+        with self.assertRaisesRegex(Rejected, 'filesystem node limit'):
+            process(self.archive, self.output, entries=1, nodes=3)
+        self.assert_unpublished()
+        result = process(self.archive, self.output, entries=1, nodes=4)
+        self.assertTrue(result['ok'])
+        self.assertEqual(len(list(self.output.rglob('*'))), 4)
+        self.assertEqual((self.output / 'a/b/c/file').read_bytes(), b'x')
+
+    def test_shared_parents_count_once(self):
+        self.make([('a/b/first', b'one'), ('a/b/second', b'two'), ('a/c', b'')])
+        with self.assertRaisesRegex(Rejected, 'filesystem node limit'):
+            process(self.archive, nodes=4)
+        process(self.archive, self.output, nodes=5)
+        self.assertEqual(len(list(self.output.rglob('*'))), 5)
+
+    def test_explicit_parents_count_once_in_either_order(self):
+        members = [('a/b/file', b'x'), ('a/b/', b''), ('a/', b'')]
+        for ordered in (members, list(reversed(members))):
+            with self.subTest(order=[name for name, _ in ordered]):
+                self.make(ordered)
+                self.assertTrue(process(self.archive, nodes=3)['ok'])
+                with self.assertRaisesRegex(Rejected, 'filesystem node limit'):
+                    process(self.archive, self.output, nodes=2)
+                self.assert_unpublished()
+
+    def test_empty_directories_and_zero_byte_files_count(self):
+        self.make([('empty/', b''), ('zero', b'')])
+        with self.assertRaisesRegex(Rejected, 'filesystem node limit'):
+            process(self.archive, self.output, nodes=1)
+        self.assert_unpublished()
+        self.assertEqual(process(self.archive, self.output, nodes=2)['total_bytes'], 0)
+        self.assertEqual(len(list(self.output.rglob('*'))), 2)
+
+    def test_empty_archive_does_not_charge_stage_root(self):
+        self.make([])
+        process(self.archive, self.output, nodes=1)
+        self.assertEqual(list(self.output.iterdir()), [])
+
+    def test_node_limit_rejects_before_staging_or_payload_read(self):
+        self.make([('a/b/file', b'content')])
+        with mock.patch('safezip.tempfile.mkdtemp') as staging:
+            with mock.patch('safezip.zipfile.ZipFile.open') as payload:
+                for output in (None, self.output):
+                    with self.assertRaisesRegex(Rejected, 'filesystem node limit'):
+                        process(self.archive, output, nodes=2)
+                staging.assert_not_called()
+                payload.assert_not_called()
+        self.assert_unpublished()
+
+    def test_node_limit_independent_of_entry_limit(self):
+        self.make([('a/b', b'x'), ('a/c', b'y')])
+        with self.assertRaisesRegex(Rejected, 'entry limit'):
+            process(self.archive, entries=1, nodes=100)
+        with self.assertRaisesRegex(Rejected, 'filesystem node limit'):
+            process(self.archive, entries=100, nodes=2)
+        self.assertTrue(process(self.archive, entries=2, nodes=3)['ok'])
+
+    def test_max_depth_and_unicode_node_boundary(self):
+        name = '/'.join(['caf\u00e9'] * 31 + ['file'])
+        self.make([(name, b'')])
+        with self.assertRaisesRegex(Rejected, 'filesystem node limit'):
+            process(self.archive, self.output, nodes=31)
+        self.assert_unpublished()
+        process(self.archive, self.output, nodes=32)
+        self.assertEqual(len(list(self.output.rglob('*'))), 32)
+
+    def test_resource_limits_require_positive_integers_before_read(self):
+        for name in ('entries', 'file_bytes', 'total_bytes', 'archive_bytes', 'ratio', 'nodes'):
+            for value in (0, -1, True, False, 1.0, 1.5, float('nan'),
+                          float('inf'), float('-inf'), '2', None):
+                with self.subTest(name=name, value=value):
+                    with mock.patch.object(Path, 'open') as opened:
+                        with self.assertRaisesRegex(Rejected, 'positive integer'):
+                            process(self.archive, self.output, **{name: value})
+                        opened.assert_not_called()
+        self.assert_unpublished()
+
+    def test_inventory_node_limit_validates_direct_calls(self):
+        import argparse
+        from safezip import inventory
+        limits = argparse.Namespace(entries=10, file_bytes=10, total_bytes=100, ratio=200)
+        self.make([('a/b', b'x')])
+        with zipfile.ZipFile(self.archive) as archive:
+            for value in (0, -1, True, 1.0, float('nan'), None):
+                with self.subTest(value=value), self.assertRaises(Rejected):
+                    inventory(archive, limits, node_limit=value)
+            self.assertEqual(len(inventory(archive, limits, node_limit=2)[0]), 1)
+            with self.assertRaisesRegex(Rejected, 'filesystem node limit'):
+                inventory(archive, limits, node_limit=1)
+
+    def test_nodes_cli(self):
+        import subprocess
+        self.make([('a/b/file', b'content')])
+        script = str(Path(__file__).with_name('safezip.py'))
+        for value in ('0', '-1', 'nan', '2', '2.5'):
+            result = subprocess.run(['python3', '-B', script, 'extract', str(self.archive),
+                                     str(self.output), '--nodes', value],
+                                    capture_output=True, text=True)
+            self.assertEqual(result.returncode, 2, result.stderr)
+            self.assertNotIn('Traceback', result.stderr)
+            self.assert_unpublished()
+        result = subprocess.run(['python3', '-B', script, 'extract', str(self.archive),
+                                 str(self.output), '--nodes', '3'],
+                                capture_output=True, text=True)
+        self.assertEqual(result.returncode, 0, result.stderr)
+        self.assertTrue(json.loads(result.stdout)['ok'])
+        self.assertEqual((self.output / 'a/b/file').read_bytes(), b'content')
+
     def test_crc_failure_is_atomic(self):
         self.make([('first', b'good'), ('second', b'broken')])
         raw = bytearray(self.archive.read_bytes())

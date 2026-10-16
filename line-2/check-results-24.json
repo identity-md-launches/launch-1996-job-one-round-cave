@@ -1,0 +1,33 @@
+{
+  "execution_profile": "none",
+  "local_observations_only": true,
+  "checks": [
+    {
+      "command": "python3 -B line-2/tools/safezip/selftest.py",
+      "exit_code": 0,
+      "tests_passed": 44,
+      "inherited_tests_passed": 33,
+      "new_tests_passed": 11
+    },
+    {
+      "command": "python3 -B line-2/tools/safezip/swarm_demo.py",
+      "exit_code": 0,
+      "sample_bytes": 23132,
+      "sample_sha256": "be142840c010710cb2a5b9e5c73e71d8e79ec4054c15661699d60bfa627be96a",
+      "zip_entries": 1,
+      "output_nodes": 3,
+      "nodes_2_rejected_without_output": true,
+      "nodes_3_matches_capture": true
+    },
+    {
+      "command": "node line-2/finish-wall-24.cjs",
+      "exit_code": 0,
+      "png_roundtrip_passed": true,
+      "outside_mask_changed_pixels": 0
+    }
+  ],
+  "limitations": [
+    "Cooperative workspace required; no protection against concurrent path mutations.",
+    "Node count is not a disk-block, free-inode, parser-memory or hard-time limit."
+  ]
+}

@@ -1,0 +1,25 @@
+{
+  "ok": true,
+  "wall": "artifacts/line-2/wall-v5.png",
+  "format": "PNG",
+  "dimensions": [
+    1254,
+    1254
+  ],
+  "sha256": "f86a93f6c5585f62bb41b3c27e93c2a9dd014f294b91ac013ed02cfbcaa50aa8",
+  "wall_alias_identical": true,
+  "named_output_untracked": true,
+  "preview_format": "JPEG",
+  "preview_dimensions": [
+    512,
+    512
+  ],
+  "preview_bytes": 88212,
+  "record_shape_valid": true,
+  "new_record": 24,
+  "old_records_unchanged": true,
+  "goal_byte_identical": true,
+  "changes_within_allowed_paths": true,
+  "source_and_preview_files_under_100KB": true,
+  "python_syntax_valid": true
+}

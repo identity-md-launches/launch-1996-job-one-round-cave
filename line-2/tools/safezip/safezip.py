@@ -69,7 +69,9 @@ def member_name(info):
     return '/'.join(parts)
 
 
-def inventory(archive, limits, checkpoint=lambda: None):
+def inventory(archive, limits, checkpoint=lambda: None, *, node_limit=32000):
+    if isinstance(node_limit, bool) or not isinstance(node_limit, int) or node_limit <= 0:
+        raise Rejected('node limit must be a positive integer')
     infos = archive.infolist()
     if len(infos) > limits.entries:
         raise Rejected('entry limit exceeded')
@@ -91,6 +93,10 @@ def inventory(archive, limits, checkpoint=lambda: None):
             prior = nodes.get(prefix.casefold())
             if prior and (prior[0] != prefix or prior[1] != directory):
                 raise Rejected('file/directory or case collision: ' + repr(prefix))
+            # An entry can create up to 31 implicit parent directories. Bound
+            # distinct filesystem objects, not just central-directory entries.
+            if prior is None and len(nodes) >= node_limit:
+                raise Rejected('filesystem node limit exceeded')
             nodes[prefix.casefold()] = (prefix, directory)
         if info.file_size > limits.file_bytes:
             raise Rejected('individual file limit exceeded')
@@ -107,7 +113,7 @@ def inventory(archive, limits, checkpoint=lambda: None):
 
 def process(archive_path, output=None, *, entries=1000, file_bytes=16*1024*1024,
             total_bytes=64*1024*1024, archive_bytes=32*1024*1024, ratio=200,
-            expected_sha256=None, seconds=None, cancelled=None):
+            expected_sha256=None, seconds=None, cancelled=None, nodes=32000):
     # Cooperative interruption: no thread, signal handler or environment access.
     if seconds is not None:
         try:
@@ -131,8 +137,11 @@ def process(archive_path, output=None, *, entries=1000, file_bytes=16*1024*1024,
     checkpoint()
     limits = argparse.Namespace(entries=entries, file_bytes=file_bytes,
                                 total_bytes=total_bytes, ratio=ratio)
-    if min(entries, file_bytes, total_bytes, archive_bytes, ratio) <= 0:
-        raise Rejected('all limits must be positive')
+    for name, value in [('entries', entries), ('file_bytes', file_bytes),
+                        ('total_bytes', total_bytes), ('archive_bytes', archive_bytes),
+                        ('ratio', ratio), ('nodes', nodes)]:
+        if isinstance(value, bool) or not isinstance(value, int) or value <= 0:
+            raise Rejected(name + ' limit must be a positive integer')
     if expected_sha256 is not None and (
             not isinstance(expected_sha256, str)
             or re.fullmatch(r'[0-9a-fA-F]{64}', expected_sha256) is None):
@@ -174,7 +183,7 @@ def process(archive_path, output=None, *, entries=1000, file_bytes=16*1024*1024,
         snapshot.seek(0)
         with snapshot, zipfile.ZipFile(snapshot) as archive:
             checkpoint()
-            members, total = inventory(archive, limits, checkpoint)
+            members, total = inventory(archive, limits, checkpoint, node_limit=nodes)
             checkpoint()
             if target is not None:
                 stage = Path(tempfile.mkdtemp(prefix='.safezip-', dir=target.parent))
@@ -238,7 +247,7 @@ def main():
     parser.add_argument('output', nargs='?')
     for flag, default in [('entries', 1000), ('file-bytes', 16*1024*1024),
                           ('total-bytes', 64*1024*1024), ('archive-bytes', 32*1024*1024),
-                          ('ratio', 200)]:
+                          ('ratio', 200), ('nodes', 32000)]:
         parser.add_argument('--' + flag, type=int, default=default)
     parser.add_argument('--seconds', type=float, help='cooperative time budget in seconds')
     parser.add_argument('--sha256', help='require these exact approved archive bytes')
@@ -249,7 +258,8 @@ def main():
         result = process(args.archive, args.output, entries=args.entries,
                          file_bytes=args.file_bytes, total_bytes=args.total_bytes,
                          archive_bytes=args.archive_bytes, ratio=args.ratio,
-                         expected_sha256=args.sha256, seconds=args.seconds)
+                         expected_sha256=args.sha256, seconds=args.seconds,
+                         nodes=args.nodes)
     except (ValueError, OSError, zipfile.BadZipFile, NotImplementedError, RuntimeError, EOFError, zlib.error) as error:
         print(json.dumps({'ok': False, 'error': str(error)}, ensure_ascii=True))
         return 2

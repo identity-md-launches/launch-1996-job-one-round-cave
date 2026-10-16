@@ -10,7 +10,8 @@ From the workspace root, this one command demonstrates the tool offline:
 python3 -B line-2/tools/safezip/selftest.py
 ```
 
-Tried here: **33 tests passed** (the original 24 plus nine interruption checks). A normal archive was inspected, extracted and
+Tried here: **44 tests passed** (all 33 inherited tests plus eleven node-budget and
+argument-validation checks). A normal archive was inspected, extracted and
 checked byte-for-byte; stored and deflated payloads worked. Tests rejected
 traversal and absolute paths, Windows paths/reserved names, non-NFC names,
 duplicates and case collisions, file/directory conflicts, symbolic links and
@@ -19,6 +20,47 @@ aggregate byte overflow, excess entries and compression bombs. CRC corruption,
 broken deflate and truncated archives failed; failed extractions left neither a
 published destination nor a staging directory. Existing output and symlink paths
 were refused. CLI success and error exit codes were checked.
+
+## Limit files and implicit parent directories
+
+`--nodes 200` caps the number of distinct files and directories below the output
+root. The API equivalent is `process(archive_path, output, nodes=200)`; inspection
+enforces the same limit without creating anything. A single ZIP entry named
+`a/b/c/file` consumes four nodes, even if none of its parent directories appears
+as an explicit entry. Shared parents count once; an explicit directory entry
+before or after its children does not count again. Empty directories and empty
+files still count. The destination/staging root is excluded: extraction can use
+at most `nodes + 1` filesystem objects, including that root, in a cooperative
+workspace. An empty ZIP therefore creates just the root.
+
+The default is 32,000 nodes, preserving the old default ceiling of 1,000 entries
+with at most 32 path components each. Increasing `--entries` does not raise
+`--nodes` automatically. Set both budgets intentionally. The entry count still
+limits ZIP records; the node count limits the unique output tree. All count,
+byte and ratio limits must be positive integers in both CLI and Python calls;
+booleans, floats (including NaN/infinity), strings and zero are refused. This
+closes API cases where comparisons with NaN could disable a limit.
+
+The node check runs during inventory, before staging or payload decompression,
+and rejects before adding a node beyond the cap. It does not bound ZIP parser
+allocation, filesystem block sizes, free space or inode availability. The archive
+snapshot and Python's central-directory parsing still precede this inventory.
+Every existing collision, content, approval and cancellation check remains.
+
+For an offline demonstration using actual public swarm data:
+
+```sh
+python3 -B line-2/tools/safezip/swarm_demo.py
+```
+
+Tried here: the public IMD OpenAPI capture (23,132 bytes, fetched by a read-only
+GET on 2026-10-16) was wrapped as one ZIP entry, `docs/imd/openapi.json`. A
+two-node budget refused it without leaving a stage; a three-node budget extracted
+it and matched the captured bytes exactly with approved archive SHA-256 and a
+ten-second cooperative budget. The demo reads the bundled capture, uses only
+`test/scratch/`, cleans its temporary files, and makes no network requests.
+`sample-source.json` records the actual URL, capture time, digest and User-Agent.
+The API description is inert test data; none of its endpoints is invoked.
 
 ## Review an archive, then require the same bytes
 
@@ -108,6 +150,7 @@ Defaults (all overridable by the matching flag):
 | Flag | Default |
 | --- | ---: |
 | `--entries` | 1000 |
+| `--nodes` | 32000 |
 | `--archive-bytes` | 33554432 (32 MiB) |
 | `--file-bytes` | 16777216 (16 MiB) |
 | `--total-bytes` | 67108864 (64 MiB) |
@@ -130,7 +173,7 @@ Use a **cooperative workspace with no concurrent path mutations**. The path
 checks are not a kernel sandbox and do not defend against another local process
 racing symlinks, renames, or archive changes. Filesystem behavior was tested on
 Linux; portability restrictions are conservative, not a test of every filesystem.
-Resource limits bound archive bytes, entries, declared/streamed output and ratio;
+Resource limits bound archive bytes, entries, filesystem nodes, declared/streamed output and ratio;
 they do not promise an exact RAM ceiling or hard CPU deadline. Optional time
 budgets are cooperative as described above. ZIP directory parsing
 still has memory overhead. Nested archives are extracted as inert bytes, never

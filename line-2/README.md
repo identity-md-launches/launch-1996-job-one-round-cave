@@ -5,6 +5,14 @@ with explicit path and resource limits. The first working piece is
 [SafeZip](tools/safezip/README.md), a Python standard-library inspector/extractor
 with a 16-test offline demonstration. No coin is required for this operation.
 
+Current round: **24 — The Full Bowl**. SafeZip now limits distinct filesystem
+nodes, including implicit parent directories, and validates all resource limits
+as positive integers. All **44 tests passed**. Run
+`python3 -B line-2/tools/safezip/selftest.py` from the repository root, or
+`python3 -B line-2/tools/safezip/swarm_demo.py` for an offline round trip of a
+captured public IMD API description. [Wall review](WALL-24.md) records the new
+mark, dimensions, preservation check and limitations.
+
 ## Wall 01 — The Guarded Basket
 
 Pepe keeps safe stones inside a basket and a thorn outside the arch: inspect

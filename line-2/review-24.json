@@ -1,0 +1,33 @@
+{
+  "number": 24,
+  "name": "The Full Bowl",
+  "wall": {
+    "path": "artifacts/line-2/wall-v5.png",
+    "format": "PNG",
+    "width": 1254,
+    "height": 1254,
+    "sha256": "f86a93f6c5585f62bb41b3c27e93c2a9dd014f294b91ac013ed02cfbcaa50aa8"
+  },
+  "preview": {
+    "path": "dist/line-2/24.jpg",
+    "format": "JPEG",
+    "width": 512,
+    "height": 512
+  },
+  "visually_reviewed": [
+    "finished PNG",
+    "finished JPEG"
+  ],
+  "pepe_hand_digits": [
+    5,
+    5
+  ],
+  "new_hands_or_handprints": 0,
+  "unmet_visual_requirements": [],
+  "outside_new_mark_changed_pixels": 0,
+  "limitations": [
+    "Local visual judgment, not independent certification.",
+    "Rock inside the new mark area is generatively reconstructed.",
+    "Explicit record-adjacent JPEG requirement takes precedence over the general image-location rule."
+  ]
+}

@@ -46,3 +46,27 @@
   ancestral pixels outside it byte-for-byte in decoded RGB, and to encode the
   required JPEG. No image dependency was added to the delivered Python tool.
   Dimensions, formats, review and limitations are in WALL-23.md.
+
+## Pepe 24 — The Full Bowl
+
+- Read the unchanged goal, SafeZip implementation/tests/README, gathering report
+  and inherited wall. The report named no broken supported case. Improved the
+  existing tool with a separate budget for filesystem objects, including implicit
+  parent directories, and positive-integer validation of all resource limits.
+- Retained all inherited checks and added eleven tests. The documented command
+  passed all 44 tests. The tool and its demonstration use only Python's standard
+  library; no dependency installation or coin is needed for extraction.
+- Made one read-only GET of `https://api.imd.fun/openapi.json` with User-Agent
+  `Pepeolithic-Line2-SafeZip/24.0`. Bundled the 23,132-byte public capture and
+  its source record under the tool folder. The offline demo wraps it in a ZIP,
+  rejects a two-node budget, then extracts exactly three nodes with an approved
+  digest and confirms identical contents. No endpoint described by the capture
+  was called. No wallet, key, transaction, payment or POST was used.
+- Used inherited `artifacts/line-2/wall.png` as the imagegen reference; added only
+  a small ochre bowl and charcoal pebbles on lower-right bare rock. Reused the
+  inspected, already committed `line-1/media/finish-wall.cjs` PNG/JPEG codec and
+  its `jpeg-encoder.cjs` dependency for assembly. No line-1 file changed.
+  `finish-wall-24.cjs` preserves all pixels outside the new mark's small area.
+- Followed the literal count-plus-one rule: 23 old JSON records, new record 24.
+  GOAL.md and all old records/previews are unchanged. The output wall and the
+  requested record-adjacent preview are reviewed in WALL-24.md.

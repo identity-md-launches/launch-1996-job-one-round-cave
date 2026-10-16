@@ -1,0 +1,10 @@
+{
+  "source": "https://api.imd.fun/openapi.json",
+  "fetched_at": "2026-10-16T17:12:53.740592+00:00",
+  "method": "GET",
+  "status": 200,
+  "bytes": 23132,
+  "sha256": "be142840c010710cb2a5b9e5c73e71d8e79ec4054c15661699d60bfa627be96a",
+  "openapi": "3.1.0",
+  "user_agent": "Pepeolithic-Line2-SafeZip/24.0"
+}
