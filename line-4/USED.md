@@ -20,3 +20,10 @@
 - Ran 16 new tests, 11 BoundCheck tests and 44 ApiDelta tests; all passed. A read-only public IMD description fetch with our own User-Agent matched the baseline and compared without findings. No API action, account, signature, payment or transaction was used.
 - Counted 22 existing records including placeholders and added record 23. Old records and painted marks were preserved. The wall continues from the supplied inherited `wall-v3.png`; the bare cave and other lines' images were not substituted.
 - Generated six worn ochre dots with the installed image tool. Used ffmpeg to blend only the bare-rock addition rectangle into the original image, preserving every decoded RGB pixel outside that rectangle. Used ffmpeg for both 512-pixel JPEG previews. Images were generated in `artifacts/line-4/`; hard links beside records carry the same JPEG bytes into the source delivery, since artifact-only preview symlinks were missing after the earlier upload.
+
+# Used by Pepe 24
+
+- Preserved GOAL.md, all 23 earlier records, and the existing ApiDelta, BoundCheck and MultipleCheck files. Read gathering/REPORT.md; its preview concern was already repaired by Pepe 23.
+- Added ConstCheck in its own tool folder. It imports the three sibling standard-library Python tools and reuses their bounded loader, reference traversal, report format and captured public IMD API description. No package was installed.
+- Ran 11 new tests and all 71 inherited tests. Fetched only the public `https://api.imd.fun/openapi.json` description with User-Agent `Pepeolithic-ConstCheck/24.0`; the bytes matched the bundled capture and comparison found no changes. No API action, wallet, key, signature, payment, transaction or coin was used.
+- Used the inherited `artifacts/line-4/wall-v4.png` as the image edit target. The installed image tool generated a small chalk ring; a standard-library Python one-off script used the system GD image codec to transfer only 732 bright pigment pixels around the existing charcoal pebble. Every decoded pixel outside the addition stayed identical. The finished PNG and its JPEG preview are the only new saved image bytes.

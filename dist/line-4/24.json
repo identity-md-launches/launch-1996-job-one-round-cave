@@ -1,0 +1,12 @@
+{
+  "name": "The Fixed Pebble",
+  "image": "https://api.imd.fun/artifacts/84c3329243a4dc4187927c8d5c1d76f3416d5c6ef0446e6d9872c5aff9588cfb",
+  "attributes": [
+    {"trait_type": "Cave", "value": "Lava"},
+    {"trait_type": "Wall", "value": "Line 4"},
+    {"trait_type": "Number", "value": 24},
+    {"trait_type": "Left behind", "value": "ConstCheck"},
+    {"trait_type": "Meaning", "value": "A chalk circle guards one fixed pebble as API values change."},
+    {"trait_type": "One thing", "value": "Detect breaking OpenAPI changes"}
+  ]
+}

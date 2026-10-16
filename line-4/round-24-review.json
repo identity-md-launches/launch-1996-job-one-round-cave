@@ -1,0 +1,48 @@
+{
+  "wall": {
+    "path": "artifacts/line-4/wall-v5.png",
+    "canonical": "artifacts/line-4/wall.png",
+    "format": "PNG",
+    "width": 1254,
+    "height": 1254,
+    "sha256": "84c3329243a4dc4187927c8d5c1d76f3416d5c6ef0446e6d9872c5aff9588cfb",
+    "bytes": 2724193
+  },
+  "preview": {
+    "path": "dist/line-4/24.jpg",
+    "format": "JPEG",
+    "width": 512,
+    "height": 512,
+    "bytes": 51537
+  },
+  "preservation": {
+    "source": "artifacts/line-4/wall-v4.png",
+    "comparison": "decoded RGB pixels",
+    "changed_pixels": 732,
+    "changed_pixels_outside_addition": 0,
+    "addition_bounds_inclusive": [858, 393, 942, 479]
+  },
+  "visual_review": {
+    "reviewer": "worker inspection of full wall and JPEG",
+    "subject": "inherited Pepe cave figure with heavy-lidded eyes and wide mouth",
+    "hands": 2,
+    "digits_per_hand": [5, 5],
+    "new_hands_or_handprints": 0,
+    "new_mark": "a broken chalk-white circle around the inherited charcoal pebble",
+    "text_or_numbers_observed": false,
+    "unmet_visual_requirements": []
+  },
+  "checks": {
+    "constcheck_tests": 11,
+    "inherited_tests": 71,
+    "offline_demo_breaking": 1,
+    "offline_demo_review": 1,
+    "fresh_public_description_operations": 5,
+    "fresh_public_description_findings": 0
+  },
+  "limitations": [
+    "The chalk mark uses a small selection of generated pigment pixels; worn stone texture remains visible beneath it.",
+    "Visual inspection was performed by the worker, without independent approval.",
+    "ConstCheck is a conservative static detector, not a proof of schema implication or runtime compatibility."
+  ]
+}
