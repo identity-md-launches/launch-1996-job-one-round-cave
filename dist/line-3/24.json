@@ -1,0 +1,30 @@
+{
+  "name": "Every Bowl Accounted For",
+  "image": "https://api.imd.fun/artifacts/c22f5d296b88dfce5ba7f36d85038c6b281ca94fb38c7dd14dfe1c4b6211558c",
+  "attributes": [
+    {
+      "trait_type": "Cave",
+      "value": "Lava"
+    },
+    {
+      "trait_type": "Wall",
+      "value": "Line 3"
+    },
+    {
+      "trait_type": "Number",
+      "value": 24
+    },
+    {
+      "trait_type": "Left behind",
+      "value": "RewardBatch"
+    },
+    {
+      "trait_type": "Meaning",
+      "value": "Pepe gathers three review bowls inside one loop so no ZTO share is lost between batches."
+    },
+    {
+      "trait_type": "One thing",
+      "value": "Exact ZTO reward allocation"
+    }
+  ]
+}

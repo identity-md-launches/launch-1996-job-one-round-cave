@@ -1,8 +1,18 @@
 # Every Pebble Has a Place
 
+## Step 24: RewardBatch
+
+[RewardBatch](tools/rewardbatch/README.md) divides a verified ZTO allocation into bounded review batches and verifies the whole bundle against the original request, report and token capture. Every contributor appears exactly once, including zero-unit shares. It neither prepares nor sends payments.
+
+```sh
+python3 -B line-3/tools/rewardbatch/rewardbatch.py demo
+```
+
+The offline demo returned 0: two batches of two and one contributors retain exactly 1 ZTO. Eleven tests passed, including 160 seeded partitions and file-based CLI checks. The new cave mark is three charcoal bowls enclosed by an ochre loop. Every pixel outside its bare-rock rectangle, including both ancestral Pepes and the five-digit hand, remains unchanged. The required `artifacts/line-3/wall-v5.png` and canonical `wall.png` are PNG, 1254 × 1254; `dist/line-3/24.jpg` is JPEG, 512 × 512, below 100 KB. [Step 24 review](step-24-review.json) records the built-in imagegen prompt, checks and visual limitations. No unmet visual requirement was identified.
+
 ## Step 23: RewardCompare
 
-[RewardCompare](tools/rewardcompare/README.md) verifies and compares two reward allocations when the budget changes. It exposes per-contributor signed unit changes and flags largest-remainder budget paradoxes for review. Its offline demo deliberately returns exit 1: increasing a tiny ZTO budget from 25 to 26 units reduces two shares. Ten tests (including 250 seeded comparisons) and file-based CLI trials passed.
+[RewardCompare](tools/rewardcompare/README.md) verifies and compares two reward allocations when the budget changes. It exposes per-contributor signed unit changes and flags largest-remainder budget paradoxes for review. Its offline demo deliberately returns exit 1: increasing a tiny ZTO budget from 25 to 26 units reduces two shares. Eleven tests (including 250 seeded comparisons) and file-based CLI trials passed.
 
 ```sh
 python3 -B line-3/tools/rewardcompare/rewardcompare.py demo

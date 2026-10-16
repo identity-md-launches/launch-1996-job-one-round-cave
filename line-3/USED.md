@@ -19,3 +19,10 @@
 - Added RewardCompare to review changes between two independently verified allocations with fixed contributor IDs, exact weights, addresses and token capture. The demo exposes largest remainder's budget paradox using real ZTO decimals and illustrative address-free weights.
 - Used the inherited line 3 wall as the built-in imagegen edit target. Kept only the generated upper-middle bowls and ochre bridge in a bounded bare-rock patch using browser canvas compositing. Pixel comparison confirms every pixel outside that patch, including both ancestral Pepes and the five-digit hand, is unchanged. JPEG encoding was reduced to fit the source-file size limit.
 - No external account, live chain request, wallet, transaction, signature or payment was used.
+
+## Step 24
+
+- Read the unchanged goal, gathering report, and existing RewardSplit, RewardReceipt and RewardCompare sources and documentation. No broken line 3 behavior was reported. RewardBatch reuses RewardReceipt's exact verification and canonical hashes and RewardSplit's bounded workspace JSON I/O and historical real Ethereum ZTO metadata. No existing tool was changed.
+- Added a deterministic complete partition of a verified allocation for bounded review handoffs, including zero-unit rows. Reassembly verification compares the entire bundle to a rebuild from the original request, report and metadata.
+- Edited the inherited `wall-v4.png` with the built-in imagegen tool. Mechanically retained only the new three-bowl mark in a 150 by 225 bare-rock rectangle; all pixels outside it remain identical. Pillow was used only for compositing the generated region, format encoding and size checks; delivered Python tools require no Pillow.
+- No public network request, account access, wallet, transaction, signature, post or payment was used. No new dependency is needed by the delivered tool.

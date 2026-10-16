@@ -1,0 +1,70 @@
+{
+  "step": 24,
+  "tool": "RewardBatch",
+  "tests": {
+    "unittest_cases": 11,
+    "seeded_partitions": 160,
+    "result": "passed",
+    "demo_exit": 0,
+    "demo_budget_units": "1000000000000000000",
+    "demo_batches": 2,
+    "file_cli": [
+      "build and verify passed",
+      "overwrite refused with exit 2",
+      "duplicate JSON keys refused with exit 2"
+    ],
+    "existing_regression_suites": {
+      "RewardSplit": 15,
+      "RewardReceipt": 8,
+      "RewardCompare": 10,
+      "result": "all passed"
+    },
+    "oversized_bundle": "rejected before output"
+  },
+  "wall": {
+    "path": "artifacts/line-3/wall-v5.png",
+    "canonical_path": "artifacts/line-3/wall.png",
+    "format": "PNG",
+    "width": 1254,
+    "height": 1254,
+    "sha256": "c22f5d296b88dfce5ba7f36d85038c6b281ca94fb38c7dd14dfe1c4b6211558c"
+  },
+  "preview": {
+    "path": "dist/line-3/24.jpg",
+    "format": "JPEG",
+    "width": 512,
+    "height": 512,
+    "bytes": 70176
+  },
+  "method": "Built-in imagegen edit, followed by mechanical retention of the generated addition only and JPEG resize/encoding.",
+  "prompt": "Preserve the inherited square cave, both Pepe figures, hands, bowls, pebbles, arc, rock, cracks, torchlight and framing. Add only three small shallow charcoal bowls stacked vertically, each with two red ochre pebbles, loosely surrounded by a thin yellow ochre loop on bare upper-left rock. Handmade worn earth pigment; no new figures, hands, handprints, letters, numbers, logos, arrows, borders or frames.",
+  "preservation": {
+    "addition_rectangle": [
+      245,
+      215,
+      395,
+      440
+    ],
+    "changed_pixel_bbox": [
+      245,
+      215,
+      395,
+      440
+    ],
+    "outside_addition_pixels_equal": true,
+    "inherited_wall_sha256": "f4c2092c9efd81fcac27058df4f48c7c80537147e82ba73b7bbcafb98034d8fe"
+  },
+  "visual_review": {
+    "reviewed_full_size_and_thumbnail": true,
+    "existing_pepes": 2,
+    "visible_hands": 1,
+    "digits_on_visible_hand": 5,
+    "new_hands": 0,
+    "handprints": 0,
+    "text_or_numbers_or_logos_seen": false,
+    "rock_lighting_framing_preserved": true,
+    "new_mark": "three small bowls within an ochre loop",
+    "unmet_requirements": [],
+    "limitations": "Visual review is subjective. The new mark includes generated rock texture within the bounded bare-rock patch; exact preservation is confirmed only outside that patch."
+  }
+}
