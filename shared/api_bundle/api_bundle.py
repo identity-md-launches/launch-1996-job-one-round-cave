@@ -13,13 +13,15 @@ import time
 import zipfile
 import zlib
 
-from vendor import apidelta, multiplecheck, safezip
+from vendor import apidelta, constcheck, safezip
 
 MAX_ARCHIVE = 32 * 1024 * 1024
 
 
-def read_bundle(path, member='openapi.json', expected_sha256=None, checkpoint=lambda: None):
+def read_bundle(path, member='openapi.json', expected_sha256=None, checkpoint=lambda: None, nodes=32000):
     checkpoint()
+    if type(nodes) is not int or nodes <= 0:
+        raise ValueError('nodes must be a positive integer')
     if expected_sha256 is not None and (
             not isinstance(expected_sha256, str)
             or re.fullmatch(r'[0-9a-fA-F]{64}', expected_sha256) is None):
@@ -52,7 +54,7 @@ def read_bundle(path, member='openapi.json', expected_sha256=None, checkpoint=la
     actual_total = 0
     checkpoint()
     with zipfile.ZipFile(io.BytesIO(raw)) as archive:
-        entries, _ = safezip.inventory(archive, limits, checkpoint)
+        entries, _ = safezip.inventory(archive, limits, checkpoint, node_limit=nodes)
         for info, name in entries:
             checkpoint()
             if info.is_dir():
@@ -95,7 +97,7 @@ def read_bundle(path, member='openapi.json', expected_sha256=None, checkpoint=la
 
 
 def compare(old, new, member='openapi.json', old_sha256=None, new_sha256=None,
-            seconds=None, cancelled=None):
+            seconds=None, cancelled=None, nodes=32000):
     if seconds is not None:
         try:
             valid_seconds = (not isinstance(seconds, bool)
@@ -115,10 +117,10 @@ def compare(old, new, member='openapi.json', old_sha256=None, new_sha256=None,
         if deadline is not None and time.monotonic() >= deadline:
             raise ValueError('operation time budget exceeded')
 
-    a, before = read_bundle(old, member, old_sha256, checkpoint)
-    b, after = read_bundle(new, member, new_sha256, checkpoint)
+    a, before = read_bundle(old, member, old_sha256, checkpoint, nodes)
+    b, after = read_bundle(new, member, new_sha256, checkpoint, nodes)
     checkpoint()
-    report = multiplecheck.compare(a, b)
+    report = constcheck.compare(a, b)
     checkpoint()
     report['bundle_inputs'] = {'old': before, 'new': after}
     return report
@@ -131,11 +133,12 @@ def main():
     parser.add_argument('--member', default='openapi.json', help='exact member name in both ZIPs')
     parser.add_argument('--old-sha256', help='require these exact approved old archive bytes')
     parser.add_argument('--new-sha256', help='require these exact approved new archive bytes')
+    parser.add_argument('--nodes', type=int, default=32000, help='maximum distinct member paths and implicit parents per archive')
     parser.add_argument('--seconds', type=float, help='cooperative time budget for the whole comparison')
     args = parser.parse_args()
     try:
         report = compare(args.old, args.new, args.member, args.old_sha256,
-                         args.new_sha256, args.seconds)
+                         args.new_sha256, args.seconds, nodes=args.nodes)
         print(json.dumps(report, indent=2, allow_nan=False))
         return {'breaking': 1, 'review_required': 3, 'no_detected_breakage': 0}[report['status']]
     except (ValueError, OSError, RuntimeError, EOFError, zipfile.BadZipFile,

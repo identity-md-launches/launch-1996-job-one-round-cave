@@ -1,0 +1,43 @@
+{
+  "wall_path": "artifacts/gathering/wall-v5.png",
+  "wall_format": "PNG",
+  "wall_color": "RGB, 8 bits/channel, opaque",
+  "wall_dimensions": [
+    1254,
+    1254
+  ],
+  "wall_sha256": "f60e785e5288aba361f9217b5e75e7687ead3d3d92abe8d62a5fda3d7eb84421",
+  "wall_bytes": 3040479,
+  "preview_path": "dist/gathering/24.jpg",
+  "preview_format": "JPEG",
+  "preview_dimensions": [
+    512,
+    512
+  ],
+  "preview_bytes": 86735,
+  "preview_sha256": "55110e27236d8282f21636c9a7370677cce1d3bb9d184fb119b37664b6f11ac3",
+  "image_tool": "Installed mcp__image__generate (Replicate)",
+  "prompt": "Generate an isolated prehistoric pigment mark to be composited onto an existing cave wall. Plain pure white background, no rock background, square canvas. Centered small primitive drawing of two uneven shallow nested bowls or cupped arcs in red ochre, holding three rough yellow ochre seeds. It represents careful gathering and carrying shared tools. Lascaux cave painting hand-made thumb and burnt-stick pigment, broken speckled worn strokes, earthy red and yellow ochre and charcoal only. Simple flat painted mark, not actual pottery, no shadows, no 3D. Keep lots of pure white empty margin. Absolutely no letters, numbers, captions, logos, signatures, border, hands, handprints or people. Only the two cupped arcs and three seeds.",
+  "assembly": "The generated isolated pigment was cropped, flattened to ochre colors, and composited over bare lower-right rock; stone supplies the texture. The generation output was replaced in place by the finished full wall, with no intermediate image retained.",
+  "visual_review": {
+    "method": "Worker inspection of full finished PNG and 512-pixel JPEG; byte comparison against inherited gathering wall.",
+    "inherited_pepe": "Wide mouth, heavy-lidded eyes, cave pigment figure preserved.",
+    "hands": 2,
+    "digits_per_hand": [
+      5,
+      5
+    ],
+    "new_hands_or_handprints": 0,
+    "new_mark": "Red ochre seed carrier holding three yellow ochre seeds on bare lower-right rock.",
+    "rock_cracks_torchlight_framing_preserved": true,
+    "ancestors_preserved": "All RGB pixels outside the addition rectangle match the inherited wall exactly; the rectangle was visually checked as bare rock.",
+    "letters_numbers_captions_signatures_logos_watermarks_borders_frames_observed": false,
+    "photographs_3d_renders_real_people_political_or_hateful_symbols_added": false
+  },
+  "visual_requirements_unmet": [],
+  "limitations": [
+    "The small mark loses detail at thumbnail size.",
+    "Visual review was performed by this worker, without independent human approval.",
+    "Pixel preservation proves unchanged areas, not artistic quality."
+  ]
+}

@@ -1,0 +1,30 @@
+{
+  "name": "The Seed Carrier",
+  "image": "https://api.imd.fun/artifacts/f60e785e5288aba361f9217b5e75e7687ead3d3d92abe8d62a5fda3d7eb84421",
+  "attributes": [
+    {
+      "trait_type": "Cave",
+      "value": "Lava"
+    },
+    {
+      "trait_type": "Wall",
+      "value": "Gathering"
+    },
+    {
+      "trait_type": "Number",
+      "value": 24
+    },
+    {
+      "trait_type": "Left behind",
+      "value": "API Bundle with ConstCheck and node budgets"
+    },
+    {
+      "trait_type": "Meaning",
+      "value": "An ochre carrier holds three seeds so useful work can travel together."
+    },
+    {
+      "trait_type": "One thing",
+      "value": "Gathering"
+    }
+  ]
+}

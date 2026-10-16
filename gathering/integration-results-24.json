@@ -1,0 +1,194 @@
+[
+  {
+    "label": "exact plan",
+    "command": [
+      "/usr/bin/python3",
+      "-B",
+      "line-1/tools/optplan/optplan.py",
+      "--demo",
+      "--workers",
+      "2"
+    ],
+    "expected_exit": 0,
+    "exit": 0,
+    "passed": true,
+    "stdout": "{\n  \"units\": \"minutes\",\n  \"workers\": 2,\n  \"method\": \"exhaustive event search with intentional idle time\",\n  \"task_limit\": 14,\n  \"finish\": 11,\n  \"schedule\": [\n    {\n      \"task\": \"brief\",\n      \"worker\": 1,\n      \"start\": 0,\n      \"finish\": 2\n    },\n    {\n      \"task\": \"build-a\",\n      \"worker\": 1,\n      \"start\": 2,\n      \"finish\": 7\n    },\n    {\n      \"task\": \"build-b\",\n      \"worker\": 2,\n      \"start\": 2,\n      \"finish\": 6\n    },\n    {\n      \"task\": \"check\",\n      \"worker\": 1,\n      \"start\": 7,\n      \"finish\": 10\n    },\n    {\n      \"task\": \"handoff\",\n      \"worker\": 1,\n      \"start\": 10,\n      \"finish\": 11\n    }\n  ],\n  \"states_examined\": 8,\n  \"state_limit\": 100000,\n  \"proven_optimal\": true\n}\n",
+    "stderr": ""
+  },
+  {
+    "label": "approved ZIP extraction",
+    "command": [
+      "/usr/bin/python3",
+      "-B",
+      "line-2/tools/safezip/safezip.py",
+      "extract",
+      "test/scratch/gathering24-z02z7v12/new.zip",
+      "test/scratch/gathering24-z02z7v12/unpacked",
+      "--sha256",
+      "c8a66e52025d187fc7813374f62ff95aadcda29e8f562e6dfc1d9d469a8a1a21",
+      "--seconds",
+      "10"
+    ],
+    "expected_exit": 0,
+    "exit": 0,
+    "passed": true,
+    "stdout": "{\n  \"ok\": true,\n  \"mode\": \"extract\",\n  \"entries\": [\n    {\n      \"path\": \"openapi.json\",\n      \"kind\": \"file\",\n      \"bytes\": 23132,\n      \"sha256\": \"be142840c010710cb2a5b9e5c73e71d8e79ec4054c15661699d60bfa627be96a\"\n    },\n    {\n      \"path\": \"inert-note.txt\",\n      \"kind\": \"file\",\n      \"bytes\": 28,\n      \"sha256\": \"06e417019de0851572fca7b37c732aa874f4c20c62de0c818c579bfb717dacba\"\n    }\n  ],\n  \"total_bytes\": 23160,\n  \"content_checked\": true,\n  \"archive_sha256\": \"c8a66e52025d187fc7813374f62ff95aadcda29e8f562e6dfc1d9d469a8a1a21\"\n}\n",
+    "stderr": ""
+  },
+  {
+    "label": "exact ZTO allocation",
+    "command": [
+      "/usr/bin/python3",
+      "-B",
+      "line-3/tools/rewardsplit/rewardsplit.py",
+      "allocate",
+      "--input",
+      "line-3/tools/rewardsplit/example.json",
+      "--metadata",
+      "line-3/tools/rewardsplit/zto-mainnet.json",
+      "--output",
+      "test/scratch/gathering24-z02z7v12/allocation.json"
+    ],
+    "expected_exit": 0,
+    "exit": 0,
+    "passed": true,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "label": "verified receipt",
+    "command": [
+      "/usr/bin/python3",
+      "-B",
+      "line-3/tools/rewardreceipt/rewardreceipt.py",
+      "verify",
+      "--request",
+      "line-3/tools/rewardsplit/example.json",
+      "--metadata",
+      "line-3/tools/rewardsplit/zto-mainnet.json",
+      "--report",
+      "test/scratch/gathering24-z02z7v12/allocation.json"
+    ],
+    "expected_exit": 0,
+    "exit": 0,
+    "passed": true,
+    "stdout": "{\n  \"schema\": \"rewardreceipt-v1\",\n  \"result\": \"verified exact RewardSplit allocation\",\n  \"token\": {\n    \"chain_id\": 1,\n    \"address\": \"0xd782bdea4ef02a0bd391eb9089470c8080f0a68e\",\n    \"symbol\": \"ZTO\",\n    \"decimals\": 18,\n    \"block_number\": 26205319,\n    \"block_hash\": \"0xa4d2f8165b2b090fe930545d71b952c06e02401f56a892caf8d6f7a8a47d8a9a\"\n  },\n  \"budget_units\": \"1000000000000000000\",\n  \"contributors\": 3,\n  \"request_sha256\": \"2aab721988a38569c3ebc8a3beb62fe287fa4abde5e657d33022430c2f6d6314\",\n  \"metadata_sha256\": \"26804407dd1eb430871bd2b218a59974835e3fe5020829a7c8c1f25ff41465ec\",\n  \"report_sha256\": \"b6a779dc9458a76fe457f9f3d8c4f5aeb1644f168dc5f5f11c8c118bc431ae9a\",\n  \"scope\": \"offline arithmetic and input agreement only; no work, identity, balance, signature, or payment verified\"\n}\n",
+    "stderr": ""
+  },
+  {
+    "label": "build review batches",
+    "command": [
+      "/usr/bin/python3",
+      "-B",
+      "line-3/tools/rewardbatch/rewardbatch.py",
+      "build",
+      "--request",
+      "line-3/tools/rewardsplit/example.json",
+      "--report",
+      "test/scratch/gathering24-z02z7v12/allocation.json",
+      "--metadata",
+      "line-3/tools/rewardsplit/zto-mainnet.json",
+      "--batch-size",
+      "2",
+      "--output",
+      "test/scratch/gathering24-z02z7v12/batch.json"
+    ],
+    "expected_exit": 0,
+    "exit": 0,
+    "passed": true,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "label": "verify review batches",
+    "command": [
+      "/usr/bin/python3",
+      "-B",
+      "line-3/tools/rewardbatch/rewardbatch.py",
+      "verify",
+      "--request",
+      "line-3/tools/rewardsplit/example.json",
+      "--report",
+      "test/scratch/gathering24-z02z7v12/allocation.json",
+      "--metadata",
+      "line-3/tools/rewardsplit/zto-mainnet.json",
+      "--bundle",
+      "test/scratch/gathering24-z02z7v12/batch.json"
+    ],
+    "expected_exit": 0,
+    "exit": 0,
+    "passed": true,
+    "stdout": "{\n  \"schema\": \"rewardbatch-verification-v1\",\n  \"result\": \"verified complete exact partition\",\n  \"bundle_sha256\": \"c7fc118104a2e18ad7df6e485e005feab9f0b9f700e151018a3d29716133cede\",\n  \"report_sha256\": \"b6a779dc9458a76fe457f9f3d8c4f5aeb1644f168dc5f5f11c8c118bc431ae9a\",\n  \"batch_count\": 2,\n  \"contributor_count\": 3,\n  \"budget_units\": \"1000000000000000000\",\n  \"batched_units\": \"1000000000000000000\",\n  \"scope\": \"offline review batches only; no transaction, payment, entitlement or authorization\"\n}\n",
+    "stderr": ""
+  },
+  {
+    "label": "budget paradox warning",
+    "command": [
+      "/usr/bin/python3",
+      "-B",
+      "line-3/tools/rewardcompare/rewardcompare.py",
+      "demo"
+    ],
+    "expected_exit": 1,
+    "exit": 1,
+    "passed": true,
+    "stdout": "{\n  \"schema\": \"rewardcompare-v1\",\n  \"token\": {\n    \"chain_id\": 1,\n    \"address\": \"0xd782bdea4ef02a0bd391eb9089470c8080f0a68e\",\n    \"symbol\": \"ZTO\",\n    \"decimals\": 18,\n    \"block_number\": 26205319,\n    \"block_hash\": \"0xa4d2f8165b2b090fe930545d71b952c06e02401f56a892caf8d6f7a8a47d8a9a\"\n  },\n  \"before_budget_units\": \"25\",\n  \"after_budget_units\": \"26\",\n  \"budget_delta_units\": \"1\",\n  \"allocation_delta_sum_units\": \"1\",\n  \"contributors_losing_units\": [\n    \"d\",\n    \"e\"\n  ],\n  \"contributors_gaining_units\": [\n    \"a\",\n    \"b\",\n    \"c\"\n  ],\n  \"contributors_moving_against_budget\": [\n    \"d\",\n    \"e\"\n  ],\n  \"review_required\": true,\n  \"allocations\": [\n    {\n      \"id\": \"a\",\n      \"before_units\": \"7\",\n      \"after_units\": \"8\",\n      \"delta_units\": \"1\"\n    },\n    {\n      \"id\": \"b\",\n      \"before_units\": \"7\",\n      \"after_units\": \"8\",\n      \"delta_units\": \"1\"\n    },\n    {\n      \"id\": \"c\",\n      \"before_units\": \"4\",\n      \"after_units\": \"5\",\n      \"delta_units\": \"1\"\n    },\n    {\n      \"id\": \"d\",\n      \"before_units\": \"3\",\n      \"after_units\": \"2\",\n      \"delta_units\": \"-1\"\n    },\n    {\n      \"id\": \"e\",\n      \"before_units\": \"3\",\n      \"after_units\": \"2\",\n      \"delta_units\": \"-1\"\n    },\n    {\n      \"id\": \"f\",\n      \"before_units\": \"1\",\n      \"after_units\": \"1\",\n      \"delta_units\": \"0\"\n    }\n  ],\n  \"before_receipt\": {\n    \"schema\": \"rewardreceipt-v1\",\n    \"result\": \"verified exact RewardSplit allocation\",\n    \"token\": {\n      \"chain_id\": 1,\n      \"address\": \"0xd782bdea4ef02a0bd391eb9089470c8080f0a68e\",\n      \"symbol\": \"ZTO\",\n      \"decimals\": 18,\n      \"block_number\": 26205319,\n      \"block_hash\": \"0xa4d2f8165b2b090fe930545d71b952c06e02401f56a892caf8d6f7a8a47d8a9a\"\n    },\n    \"budget_units\": \"25\",\n    \"contributors\": 6,\n    \"request_sha256\": \"0c8aaeecd1ebc73700380f21cd783f2e7c72f3b9801c48d560e993492e975544\",\n    \"metadata_sha256\": \"26804407dd1eb430871bd2b218a59974835e3fe5020829a7c8c1f25ff41465ec\",\n    \"report_sha256\": \"242019588cdecea60c482eca654f3531b63fe37dcb6826fd2f9f29202906974d\",\n    \"scope\": \"offline arithmetic and input agreement only; no work, identity, balance, signature, or payment verified\"\n  },\n  \"after_receipt\": {\n    \"schema\": \"rewardreceipt-v1\",\n    \"result\": \"verified exact RewardSplit allocation\",\n    \"token\": {\n      \"chain_id\": 1,\n      \"address\": \"0xd782bdea4ef02a0bd391eb9089470c8080f0a68e\",\n      \"symbol\": \"ZTO\",\n      \"decimals\": 18,\n      \"block_number\": 26205319,\n      \"block_hash\": \"0xa4d2f8165b2b090fe930545d71b952c06e02401f56a892caf8d6f7a8a47d8a9a\"\n    },\n    \"budget_units\": \"26\",\n    \"contributors\": 6,\n    \"request_sha256\": \"132b9ff115d89dcc5f2be92951ca77ffb758015fa141404dd687443719555c9b\",\n    \"metadata_sha256\": \"26804407dd1eb430871bd2b218a59974835e3fe5020829a7c8c1f25ff41465ec\",\n    \"report_sha256\": \"8cb645f390d0ac76494ffbfc1609b87200498bcfdaf980b22fbce7480197cb5d\",\n    \"scope\": \"offline arithmetic and input agreement only; no work, identity, balance, signature, or payment verified\"\n  },\n  \"scope\": \"comparison of two complete allocations, not incremental payments or entitlement; no balance, identity, work or payment verified\",\n  \"warning\": \"largest remainder is not budget-monotonic; review decreases before replacing an allocation\"\n}\n",
+    "stderr": ""
+  },
+  {
+    "label": "fresh public API comparison",
+    "command": [
+      "/usr/bin/python3",
+      "-B",
+      "line-4/tools/constcheck/constcheck.py",
+      "compare",
+      "shared/api_bundle/imd-openapi.json",
+      "gathering/imd-openapi-current-24.json"
+    ],
+    "expected_exit": 0,
+    "exit": 0,
+    "passed": true,
+    "stdout": "{\n  \"schema\": \"apidelta-report-v1\",\n  \"perspective\": \"existing clients upgrading to the new description\",\n  \"status\": \"no_detected_breakage\",\n  \"counts\": {\n    \"breaking\": 0,\n    \"review\": 0,\n    \"info\": 0\n  },\n  \"operations_compared\": 5,\n  \"findings\": [],\n  \"limits\": \"Static conservative subset analysis, not a full OpenAPI validator or proof of runtime compatibility. Review findings are unresolved.\",\n  \"extension\": \"constcheck-v1 (includes multiplecheck-v1 and boundcheck-v1)\",\n  \"old_sha256\": \"be142840c010710cb2a5b9e5c73e71d8e79ec4054c15661699d60bfa627be96a\",\n  \"new_sha256\": \"be142840c010710cb2a5b9e5c73e71d8e79ec4054c15661699d60bfa627be96a\"\n}\n",
+    "stderr": ""
+  },
+  {
+    "label": "approved shared ZIP comparison",
+    "command": [
+      "/usr/bin/python3",
+      "-B",
+      "shared/api_bundle/api_bundle.py",
+      "test/scratch/gathering24-z02z7v12/old.zip",
+      "test/scratch/gathering24-z02z7v12/new.zip",
+      "--old-sha256",
+      "c8a66e52025d187fc7813374f62ff95aadcda29e8f562e6dfc1d9d469a8a1a21",
+      "--new-sha256",
+      "c8a66e52025d187fc7813374f62ff95aadcda29e8f562e6dfc1d9d469a8a1a21",
+      "--seconds",
+      "10",
+      "--nodes",
+      "2"
+    ],
+    "expected_exit": 0,
+    "exit": 0,
+    "passed": true,
+    "stdout": "{\n  \"schema\": \"apidelta-report-v1\",\n  \"perspective\": \"existing clients upgrading to the new description\",\n  \"status\": \"no_detected_breakage\",\n  \"counts\": {\n    \"breaking\": 0,\n    \"review\": 0,\n    \"info\": 0\n  },\n  \"operations_compared\": 5,\n  \"findings\": [],\n  \"limits\": \"Static conservative subset analysis, not a full OpenAPI validator or proof of runtime compatibility. Review findings are unresolved.\",\n  \"extension\": \"constcheck-v1 (includes multiplecheck-v1 and boundcheck-v1)\",\n  \"bundle_inputs\": {\n    \"old\": {\n      \"archive_sha256\": \"c8a66e52025d187fc7813374f62ff95aadcda29e8f562e6dfc1d9d469a8a1a21\",\n      \"approved_sha256_checked\": true,\n      \"member\": \"openapi.json\",\n      \"member_sha256\": \"be142840c010710cb2a5b9e5c73e71d8e79ec4054c15661699d60bfa627be96a\",\n      \"checked_files\": [\n        {\n          \"path\": \"openapi.json\",\n          \"bytes\": 23132,\n          \"sha256\": \"be142840c010710cb2a5b9e5c73e71d8e79ec4054c15661699d60bfa627be96a\"\n        },\n        {\n          \"path\": \"inert-note.txt\",\n          \"bytes\": 28,\n          \"sha256\": \"06e417019de0851572fca7b37c732aa874f4c20c62de0c818c579bfb717dacba\"\n        }\n      ],\n      \"all_payloads_crc_checked\": true\n    },\n    \"new\": {\n      \"archive_sha256\": \"c8a66e52025d187fc7813374f62ff95aadcda29e8f562e6dfc1d9d469a8a1a21\",\n      \"approved_sha256_checked\": true,\n      \"member\": \"openapi.json\",\n      \"member_sha256\": \"be142840c010710cb2a5b9e5c73e71d8e79ec4054c15661699d60bfa627be96a\",\n      \"checked_files\": [\n        {\n          \"path\": \"openapi.json\",\n          \"bytes\": 23132,\n          \"sha256\": \"be142840c010710cb2a5b9e5c73e71d8e79ec4054c15661699d60bfa627be96a\"\n        },\n        {\n          \"path\": \"inert-note.txt\",\n          \"bytes\": 28,\n          \"sha256\": \"06e417019de0851572fca7b37c732aa874f4c20c62de0c818c579bfb717dacba\"\n        }\n      ],\n      \"all_payloads_crc_checked\": true\n    }\n  }\n}\n",
+    "stderr": ""
+  },
+  {
+    "label": "reject too-small shared node budget",
+    "command": [
+      "/usr/bin/python3",
+      "-B",
+      "shared/api_bundle/api_bundle.py",
+      "test/scratch/gathering24-z02z7v12/old.zip",
+      "test/scratch/gathering24-z02z7v12/new.zip",
+      "--nodes",
+      "1"
+    ],
+    "expected_exit": 2,
+    "exit": 2,
+    "passed": true,
+    "stdout": "{\"ok\": false, \"error\": \"filesystem node limit exceeded\"}\n",
+    "stderr": ""
+  }
+]

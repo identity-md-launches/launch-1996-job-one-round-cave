@@ -1,0 +1,21 @@
+{
+  "inherited_wall_sha256": "207cc27f701e53a51df1a10d0aa19c7bd7c73f941a608f0033b89ffda3373875",
+  "generated_mark_sha256": "01a0324b6c22d7bae361c6cec2242c2fd80c7d5fbdf296ba3483edbaee79d880",
+  "output_sha256": "f60e785e5288aba361f9217b5e75e7687ead3d3d92abe8d62a5fda3d7eb84421",
+  "mark_rectangle": [
+    1000,
+    850,
+    150,
+    145
+  ],
+  "source_crop": [
+    340,
+    380,
+    335,
+    325
+  ],
+  "changed_pixels_inside": 8498,
+  "pixels_changed_outside": 0,
+  "protected_rgb_sha256": "59ea5f94e58f009fd4a26bb22c6c2c8abb35d0180c3752e7576acea49ec0d933",
+  "method": "Image-tool pigment crop flattened to ochre and alpha-composited on bare stone; unchanged RGB everywhere else."
+}

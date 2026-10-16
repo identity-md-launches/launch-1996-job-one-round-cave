@@ -8,7 +8,7 @@ Run from a workspace root:
 python3 -B shared/api_bundle/selftest.py
 ```
 
-Gathering 23 result: **19 integration tests passed**. Checks include the previous approval and bound cases, `multipleOf` changes inside ZIPs, integer-domain equivalence, cooperative cancellation, a positive time budget, real public IMD API data, breaking/review/error CLI exits, CRC checks of every payload and inert executable content. Scratch lives under `test/scratch/` and is never a runtime dependency.
+Gathering 24 result: **24 integration tests passed**. Checks include fixed-value `const` changes, request/response variance, OpenAPI 3.0 review, node-budget rejection before payload reads, invalid node limits, the previous approval and bound cases, `multipleOf` changes inside ZIPs, integer-domain equivalence, cooperative cancellation, a positive time budget, real public IMD API data, breaking/review/error CLI exits, CRC checks of every payload and inert executable content. Scratch lives under `test/scratch/` and is never a runtime dependency.
 
 For two archives you received:
 
@@ -28,13 +28,40 @@ Replace the uppercase argument labels with the real 64-character hex digests fro
 
 Paths must be in the current workspace with no symlink components, and the exact selected member must exist in both ZIPs. JSON goes to stdout. Exit **0** means no detected breakage, **1** potential breaking change, **2** invalid input/error, **3** unresolved review. Only exit 0 passes this static check; it does not prove runtime compatibility.
 
-The shared snapshot joins SafeZip (line 2) with ApiDelta, BoundCheck and MultipleCheck (line 4). `vendor/` contains ordinary source files; `SOURCES.json` records original/delivered hashes. SafeZip and ApiDelta are byte-identical snapshots. BoundCheck and MultipleCheck only adapt sibling module and demo capture paths to the shared layout. No line source was modified. Refresh these copies deliberately and rerun tests when upstream changes.
+The shared snapshot joins SafeZip (line 2) with ApiDelta, BoundCheck, MultipleCheck and ConstCheck (line 4). `vendor/` contains ordinary source files; `SOURCES.json` records original/delivered hashes. SafeZip and ApiDelta are byte-identical snapshots. BoundCheck, MultipleCheck and ConstCheck only adapt sibling module and demo capture paths to the shared layout. No line source was modified. Refresh these copies deliberately and rerun tests when upstream changes.
 
 Each archive is read once, at most 32 MiB. Every member is validated for paths, types, compression, collisions and declared limits. Every file is streamed to check CRC, actual byte counts and SHA-256, including files not selected for comparison. Only the selected JSON is retained, at most 1 MiB. Nothing is extracted or imported from an archive. Inventories identify all checked files and selected-member/archive hashes.
 
 BoundCheck adds numeric and size-bound findings: narrowing requests or widening responses can break clients. A hypothetical reduction of `clientNote.maxLength` from 160 to 80 in the captured real IMD API yields one breaking and one review finding through the ZIP flow. It is a synthetic upgrade, not an observed service change. Bound relaxations retain the base review findings. No comparison discards an unresolved review just because it recognizes a bound.
 
 MultipleCheck adds rational `multipleOf` findings. It detects when a revised request rejects formerly accepted multiples or a revised response permits multiples that violate the old contract. In the included ZIP test, integer request `multipleOf` changing from 2 to 3 produces a breaking finding. The integer-only `multipleOf: 0.5` case is treated as equivalent to an unrestricted integer domain. Existing review findings remain visible.
+
+ConstCheck adds fixed-value findings for OpenAPI 3.1: adding/changing a request
+`const` or removing/changing a response `const` may break callers. It distinguishes
+JSON booleans, null, strings and numbers, and preserves inherited review findings.
+For OpenAPI 3.0 and cross-version changes, `const` remains an unresolved review.
+
+Add `--nodes 200` (Python `compare(..., nodes=200)`) to bound distinct member
+paths plus implicit parent directories in each archive. For example,
+`docs/openapi.json` consumes two nodes even when the ZIP has one entry. Default:
+32,000. Every member counts, including unselected files and empty directories.
+The check runs during inventory before payload decompression. This limits the
+inventory structure; no filesystem objects are extracted. Positive integers only;
+invalid values fail before reading. Archive parsing still occurs before inventory.
+
+See the complete offline flow with one command:
+
+```sh
+python3 -B shared/api_bundle/demo.py
+```
+
+Observed: a hypothetical `clientMode` fixed-value change in the captured public
+IMD API produces one breaking and one retained review finding over five operations.
+The descriptions are packaged into reproducible ZIPs with approved SHA-256 hashes.
+A two-node budget accepts `docs/openapi.json`; a one-node budget refuses it.
+No member is extracted, executed, or called. The demo exits 0 after checking its
+expected outcomes, creates only disposable data in `test/scratch/`, and cleans up.
+Its simulated change does not claim the live API changed.
 
 Limits: stored/deflated ZIPs, 1,000 entries, 16 MiB per file, 64 MiB total uncompressed, ratio 200, normalized portable names. Memory/CPU are not hard sandboxed; initial path access requires a cooperative local workspace. API analysis covers a bounded OpenAPI 3.0/3.1 subset and local object-member references. It does not fetch external references, fully validate schemas, model every constraint interaction or prove compatibility. MultipleCheck normalizes integer domains only when both sides are explicitly integer-only; other numeric precision follows ApiDelta's JSON float parser. Regexes, compositions and other unsupported semantics still need review. Description hashes cannot detect undocumented runtime changes.
 

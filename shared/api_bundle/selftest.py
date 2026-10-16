@@ -164,7 +164,7 @@ class BundleTests(unittest.TestCase):
         proposed['paths']['/requests/quote']['post']['requestBody']['content']['application/json']['schema']['properties']['clientNote']['maxLength'] = 80
         old, new = self.archive('old.zip', baseline), self.archive('new.zip', proposed)
         report = bundle.compare(old, new)
-        self.assertEqual(report['extension'], 'multiplecheck-v1 (includes boundcheck-v1)')
+        self.assertEqual(report['extension'], 'constcheck-v1 (includes multiplecheck-v1 and boundcheck-v1)')
         self.assertEqual(report['counts']['breaking'], 1)
         self.assertEqual(report['counts']['review'], 1)
         self.assertIn('size_bound_incompatible', [f['code'] for f in report['findings']])
@@ -222,6 +222,65 @@ class BundleTests(unittest.TestCase):
                                  str(a), str(a), '--seconds', '0'],
                                 capture_output=True, text=True, timeout=10)
         self.assertEqual(result.returncode, 2)
+
+
+    def test_const_change_in_approved_public_api_zip(self):
+        old = json.loads(Path(__file__).with_name('imd-openapi.json').read_bytes())
+        schema = old['paths']['/requests/quote']['post']['requestBody']['content']['application/json']['schema']
+        schema.setdefault('properties', {})['clientMode'] = {'type': 'string', 'const': 'standard'}
+        new = copy.deepcopy(old)
+        new['paths']['/requests/quote']['post']['requestBody']['content']['application/json']['schema']['properties']['clientMode']['const'] = 'express'
+        a, b = self.archive('const-old.zip', old), self.archive('const-new.zip', new)
+        report = bundle.compare(a, b, old_sha256=hashlib.sha256(a.read_bytes()).hexdigest(),
+                                new_sha256=hashlib.sha256(b.read_bytes()).hexdigest())
+        self.assertEqual(report['status'], 'breaking')
+        self.assertEqual(report['operations_compared'], 5)
+        self.assertIn('const_incompatible', [f['code'] for f in report['findings']])
+        self.assertEqual(report['counts']['review'], 1)
+
+    def test_response_const_removal_and_openapi30_review(self):
+        old = copy.deepcopy(self.doc)
+        old['paths']['/items']['get']['responses']['200']['content'] = {
+            'application/json': {'schema': {'const': False}}}
+        new = copy.deepcopy(old)
+        del new['paths']['/items']['get']['responses']['200']['content']['application/json']['schema']['const']
+        a, b = self.archive('a.zip', old), self.archive('b.zip', new)
+        self.assertIn('const_incompatible', [f['code'] for f in bundle.compare(a, b)['findings']])
+        old['openapi'] = new['openapi'] = '3.0.3'
+        a, b = self.archive('c.zip', old), self.archive('d.zip', new)
+        report = bundle.compare(a, b)
+        self.assertEqual(report['status'], 'review_required')
+        self.assertNotIn('const_incompatible', [f['code'] for f in report['findings']])
+
+    def test_node_budget_checks_unselected_implicit_parents(self):
+        a = self.archive('deep.zip', extra=[('a/b/inert.txt', b'not executed')])
+        # openapi.json + a + a/b + a/b/inert.txt = four nodes.
+        with mock.patch.object(bundle.zipfile.ZipFile, 'open') as payload:
+            with self.assertRaisesRegex(ValueError, 'filesystem node limit'):
+                bundle.compare(a, a, nodes=3)
+            payload.assert_not_called()
+        self.assertEqual(bundle.compare(a, a, nodes=4)['status'], 'no_detected_breakage')
+
+    def test_invalid_node_budget_refused_before_read(self):
+        for value in (True, False, 0, -1, 1.0, None, '4'):
+            with self.subTest(value=value), mock.patch.object(Path, 'open') as opened:
+                with self.assertRaisesRegex(ValueError, 'positive integer'):
+                    bundle.compare('nonexistent.zip', 'nonexistent.zip', nodes=value)
+                opened.assert_not_called()
+
+    def test_cli_node_budget_and_const_exit(self):
+        old = copy.deepcopy(self.doc)
+        old['paths']['/items']['get']['requestBody'] = {'content': {
+            'application/json': {'schema': {'const': 0}}}}
+        new = copy.deepcopy(old)
+        new['paths']['/items']['get']['requestBody']['content']['application/json']['schema']['const'] = False
+        a, b = self.archive('a.zip', old), self.archive('b.zip', new)
+        cmd = [sys.executable, '-B', str(Path(bundle.__file__)), str(a), str(b), '--nodes']
+        for value, code in [('0', 2), ('1', 1)]:
+            result = subprocess.run(cmd + [value], capture_output=True, text=True, timeout=10)
+            self.assertEqual(result.returncode, code, result.stderr)
+            if code == 1:
+                self.assertIn('const_incompatible', [f['code'] for f in json.loads(result.stdout)['findings']])
 
 
 if __name__ == '__main__':

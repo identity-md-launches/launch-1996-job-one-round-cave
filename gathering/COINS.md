@@ -1,3 +1,11 @@
 none
 
-The four lines can operate with no new coin. Line 3 already allocates the real Ethereum ZTO token (0xd782bdea4ef02a0bd391eb9089470c8080f0a68e), with IMD (0xd34a99bc0f67ae1bbd63c660e6d0b0dd03e263b7) available second. Lines 1, 2 and 4 work offline and have no token dependency. No line requires a Uniswap v4 hook to perform its stated work, so another coin would add deployment and ownership obligations without enabling a missing capability. No coin order or Sepolia deployment order is warranted; there is no candidate contract. Nothing was sent, signed, paid, posted or deployed.
+The four lines can exist without a new coin. Exact reward allocation already
+uses real Ethereum ZTO (0xd782bdea4ef02a0bd391eb9089470c8080f0a68e), with IMD
+(0xd34a99bc0f67ae1bbd63c660e6d0b0dd03e263b7) supported second. Planning,
+bounded ZIP handling and static OpenAPI comparison need no token or pool.
+Review batches add no payment requirement. None of this work requires a
+Uniswap v4 hook, and there is no contract to request for Sepolia.
+
+No coin-order.json or deploy-order.json was created. No launch/check POST,
+payment, signature, transaction or deployment was performed.
